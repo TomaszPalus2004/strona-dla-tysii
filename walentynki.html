@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nasza Historia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffe6e6;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        h1, h2 {
+            color: #ff4d4d;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            position: relative;
+            z-index: 10;
+        }
+        .hidden {
+            display: none;
+        }
+        .reveal-button, .quiz-button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #counter, #quote, #weather, #secret-code, #anniversary-counter {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff4d4d;
+        }
+        .stars, .hearts {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .star, .heart {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.7;
+            animation: fall 5s linear infinite;
+        }
+        .heart {
+            background: red;
+            clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 80%, 20% 100%, 0% 35%);
+        }
+        @keyframes fall {
+            from { transform: translateY(-10px); }
+            to { transform: translateY(100vh); }
+        }
+    </style>
+    <script>
+        function updateCounter() {
+            const startDate = new Date("2024-09-16");
+            const now = new Date();
+            const diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById("counter").textContent = days + " dni razem ❤️";
+        }
+
+        function showWelcomeMessage() {
+            const messages = [
+                "Witaj, skarbie! 💖 Cieszę się, że tu jesteś!",
+                "Każdy dzień z Tobą to magia! ✨",
+                "Nie mogłem/mogłam się doczekać, aż Cię zobaczę tutaj! 😍"
+            ];
+            document.getElementById("welcome-message").textContent = messages[Math.floor(Math.random() * messages.length)];
+        }
+        function setupCanvas() {
+            let canvas = document.getElementById("drawingCanvas");
+            let ctx = canvas.getContext("2d");
+            let painting = false;
+
+            function startPosition(e) {
+                painting = true;
+                draw(e);
+            }
+            function endPosition() {
+                painting = false;
+                ctx.beginPath();
+            }
+            function draw(e) {
+                if (!painting) return;
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+                ctx.strokeStyle = "#ff4d4d";
+                ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            }
+            canvas.addEventListener("mousedown", startPosition);
+            canvas.addEventListener("mouseup", endPosition);
+            canvas.addEventListener("mousemove", draw);
+        }
+
+        function changeTheme(color) {
+            document.body.style.backgroundColor = color;
+        }
+
+        function createHearts() {
+            const heartContainer = document.createElement("div");
+            heartContainer.className = "hearts";
+            document.body.appendChild(heartContainer);
+            for (let i = 0; i < 30; i++) {
+                let heart = document.createElement("div");
+                heart.className = "heart";
+                heart.style.left = Math.random() * 100 + "%";
+                heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                heartContainer.appendChild(heart);
+            }
+        }
+        function toggleMusic() {
+            let audio = document.getElementById("background-music");
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function updateAnniversaryCounter() {
+            const nextAnniversary = new Date("2025-09-16");
+            const now = new Date();
+            const diff = nextAnniversary - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            document.getElementById("anniversary-counter").textContent = "Dni do naszej rocznicy: " + days;
+        }
+
+        function getRandomQuote() {
+            const quotes = [
+                "Każdy dzień z Tobą jest moim ulubionym dniem.",
+                "Miłość to codzienne gesty, którymi pokazujemy, że nam zależy.",
+                "Chciałbym zatrzymać czas, żeby każda chwila z Tobą trwała wiecznie."
+            ];
+            document.getElementById("quote").textContent = quotes[Math.floor(Math.random() * quotes.length)];
+        }
+        function revealElement(id) {
+            document.getElementById(id).classList.toggle("hidden");
+        }
+        function getRandomMessage() {
+            const messages = [
+                "Jesteś moją ulubioną osobą na świecie ❤️",
+                "Nie ma dnia, w którym nie myślę o Tobie 😊",
+                "Dziękuję, że jesteś. Kocham Cię!"
+            ];
+            document.getElementById("love-message").textContent = messages[Math.floor(Math.random() * messages.length)];
+        }
+        function createStars() {
+            const starContainer = document.createElement("div");
+            starContainer.className = "stars";
+            document.body.appendChild(starContainer);
+            for (let i = 0; i < 100; i++) {
+                let star = document.createElement("div");
+                star.className = "star";
+                star.style.top = Math.random() * 100 + "%";
+                star.style.left = Math.random() * 100 + "%";
+                starContainer.appendChild(star);
+            }
+        }
+        function addMemory() {
+            let memoryText = document.getElementById("memory-input").value;
+            if (memoryText.trim() !== "") {
+                let memories = JSON.parse(localStorage.getItem("memories")) || [];
+                memories.push(memoryText);
+                localStorage.setItem("memories", JSON.stringify(memories));
+                loadMemories();
+                document.getElementById("memory-input").value = "";
+            }
+        }
+        function loadMemories() {
+            let memories = JSON.parse(localStorage.getItem("memories")) || [];
+            let memoryList = document.getElementById("memory-list");
+            memoryList.innerHTML = "";
+            memories.forEach(memory => {
+                let newMemory = document.createElement("li");
+                newMemory.textContent = memory;
+                memoryList.appendChild(newMemory);
+            });
+        }
+
+        function getRandomSurprise() {
+            const surprises = [
+                "Zostaw miłosną notatkę w ukrytym miejscu 💌",
+                "Zrób mi śniadanie do łóżka 🥞",
+                "Wyślij mi losowy uroczy GIF 🐻",
+                "Zaplanuj randkę niespodziankę 🎡",
+                "Napisz list z tym, co we mnie kochasz 💕"
+            ];
+            document.getElementById("romantic-surprise").textContent = surprises[Math.floor(Math.random() * surprises.length)];
+        }
+
+        setInterval(updateCounter, 1000);
+        window.onload = function() {
+            updateCounter();
+            getRandomQuote();
+            getRandomMessage();
+            createStars();
+            addMemory()
+            loadMemories();
+            updateAnniversaryCounter();
+            toggleMusic();
+            createHearts();
+            toggleMusic();
+            getRandomSurprise();
+            showWelcomeMessage();
+            setupCanvas();
+        }
+    </script>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="container">
+        <h1>Nasza Historia</h1>
+        <p id="quote"></p>
+        <h2>📅 Razem od</h2>
+        <p id="counter"></p>
+
+        <h2>🎨 Wybierz Motyw</h2>
+        <button class="reveal-button" onclick="changeTheme('#ffe6e6')">Jasny</button>
+        <button class="reveal-button" onclick="changeTheme('#222')">Ciemny</button>
+        <button class="reveal-button" onclick="changeTheme('#ffccff')">Pastelowy</button>
+
+        <h2>💖 Romantyczna Niespodzianka</h2>
+        <button class="reveal-button" onclick="revealElement('romantic-surprise')">Otwórz</button>
+        <div id="romantic-surprise" class="hidden">
+            <p>🎁 Jesteś moim największym skarbem! 💖</p>
+        </div>
+        
+        <h2>📖 Wirtualny Dziennik Wspomnień</h2>
+        <input type="text" id="memory-input" placeholder="Dodaj wspomnienie">
+        <button class="reveal-button" onclick="addMemory()">Dodaj</button>
+        <ul id="memory-list"></ul>
+
+        <h2>🎵 Nasza Playlista</h2>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6sDQp0pbsVWwQidj6KZyOq?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <h2>📸 Galeria</h2>
+        <img src="pobrany plik (1).jpg" width="200">
+        <img src="pobrany plik (2).jpg" width="200">
+        <img src="pobrany plik (3).jpg" width="200">
+        <img src="pobrany plik (4).jpg" width="200">
+        <img src="pobrany plik (5).jpg" width="200">
+        <img src="pobrany plik (6).jpg" width="200">
+        <img src="pobrany plik (7).jpg" width="200">
+
+        <h2>📜 List do Przyszłości</h2>
+        <button class="reveal-button" onclick="revealElement('love-letter')">Otwórz list</button>
+        <div id="love-letter" class="hidden">
+            <p>Moja najdroższa,
+
+                Piszę ten list z ogromnym uśmiechem, bo wiem, że kiedy będziesz go czytać, nasza historia będzie jeszcze piękniejsza niż teraz. To niesamowite, ile już razem przeżyliśmy, ile cudownych chwil mamy za sobą i ile jeszcze przed nami.
+                
+                Od pierwszych rozmów, przez pierwsze uśmiechy, pierwsze randki, po każdy moment, w którym czułem, że jesteś kimś wyjątkowym – to wszystko stworzyło coś, czego nie da się porównać do niczego innego. Każdy dzień z Tobą to najlepsza część mojego życia.
+                
+                Pamiętasz nasz pierwszy spacer, kiedy jeszcze nie wiedzieliśmy, dokąd to wszystko zmierza, ale w głębi duszy czuliśmy, że to coś ważnego? Pamiętasz pierwsze spojrzenie, w którym nie było już niepewności, tylko ta pewność, że znaleźliśmy coś, czego nie da się zastąpić?
+                
+                Każda rozmowa, każdy śmiech, każda chwila, w której nie mogliśmy się przestać uśmiechać – to wszystko jest częścią naszej historii, która z każdą sekundą staje się coraz piękniejsza.
+                
+                I chociaż ten list jest skierowany do naszej przyszłości, jedno wiem na pewno – za rok, za pięć lat, za dziesięć lat, nadal będę patrzył na Ciebie tak samo. Nadal będę chciał Cię zaskakiwać, rozśmieszać, trzymać za rękę i mówić Ci każdego dnia, jak bardzo Cię kocham.
+                
+                Bo to, co mamy, jest absolutnie wyjątkowe. I nie chodzi tylko o wielkie momenty – chodzi o te codzienne, najmniejsze rzeczy, które sprawiają, że każdy dzień z Tobą jest najlepszym dniem. O spojrzenia pełne czułości, o spontaniczne wyjazdy, o nasze żarty, o wspólne jedzenie fast foodów, o chwile, kiedy wystarczy, że jesteś obok, a cały świat staje się lepszy.
+                
+                Jestem dumny, że mogę być częścią Twojego świata. I wiem, że ten świat jest jeszcze piękniejszy, bo jest w nim Ty.
+                
+                Więc jeśli czytasz ten list, uśmiechnij się. Bo przed nami jeszcze tyle cudownych chwil, tyle wspólnych marzeń do spełnienia, tyle historii do napisania.
+                
+                I mogę Ci obiecać jedno – będę tu zawsze. Dla Ciebie, z Tobą, obok Ciebie.
+                
+                Kocham Cię dziś, jutro i zawsze.
+                
+                Zawsze Twój,
+                Tomuś
+            </p>
+        </div>
+    </div>
+</body>
+</html>
